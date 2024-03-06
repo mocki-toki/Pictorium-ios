@@ -8,9 +8,23 @@
 import UIKit
 
 final class ImagesListCell: UITableViewCell {
+    // MARK: - Constants
+
     static let reuseIdentifier = "ImagesListCell"
 
-    @IBOutlet var cellImage: UIImageView!
-    @IBOutlet var likeButton: UIButton!
-    @IBOutlet var dateLabel: UILabel!
+    // MARK: - IBOutlet
+
+    @IBOutlet private var cellImage: UIImageView!
+    @IBOutlet private var likeButton: UIButton!
+    @IBOutlet private var dateLabel: UILabel!
+
+    // MARK: - Public Methods
+
+    func config(with indexPath: IndexPath, image: UIImage) {
+        cellImage.image = image
+        dateLabel.text = Date().formatToString()
+
+        let likeIcon = indexPath.row % 2 != 0 ? UIImage.favoritesActive : UIImage.favoritesNoActive
+        likeButton.setImage(likeIcon, for: .normal)
+    }
 }

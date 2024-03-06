@@ -7,10 +7,16 @@
 
 import UIKit
 
-class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController {
+    // MARK: - IBOutlet
+
     @IBOutlet private var tableView: UITableView!
 
+    // MARK: - Private Properties
+
     private let photosName: [String] = Array(0 ... 19).map { "\($0)" }
+
+    // MARK: - UIViewController Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,6 +27,8 @@ class ImagesListViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
     }
 }
+
+// MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -36,6 +44,8 @@ extension ImagesListViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - UITableViewDataSource
+
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return photosName.count
@@ -48,20 +58,11 @@ extension ImagesListViewController: UITableViewDataSource {
             return UITableViewCell()
         }
 
-        configCell(for: imageListCell, with: indexPath)
+        if let imageName = photosName[safe: indexPath.row] {
+            let image = UIImage(named: imageName) ?? UIImage()
+            imageListCell.config(with: indexPath, image: image)
+        }
+
         return imageListCell
-    }
-}
-
-extension ImagesListViewController {
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let imageName = photosName[safe: indexPath.row] else { return }
-        let image = UIImage(named: imageName) ?? UIImage()
-
-        cell.cellImage.image = image
-        let likeIcon = indexPath.row % 2 != 0 ? UIImage.favoritesActive : UIImage.favoritesNoActive
-        cell.likeButton.setImage(likeIcon, for: .normal)
-
-        cell.dateLabel.text = Date().formatToString()
     }
 }
