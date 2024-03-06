@@ -74,6 +74,7 @@
 				C1E60EC32B95B33D00F40115 /* Resources */,
 				C14C8DD72B937D75004DDED8 /* AppDelegate.swift */,
 				C14C8DD92B937D75004DDED8 /* SceneDelegate.swift */,
+				C14C8DE52B937D76004DDED8 /* Info.plist */,
 			);
 			path = Pictorium;
 			sourceTree = "<group>";
@@ -117,7 +118,6 @@
 			children = (
 				C14C8DE22B937D76004DDED8 /* LaunchScreen.storyboard */,
 				C14C8DE02B937D76004DDED8 /* Assets.xcassets */,
-				C14C8DE52B937D76004DDED8 /* Info.plist */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
