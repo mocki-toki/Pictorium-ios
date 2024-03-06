@@ -9,21 +9,31 @@
 /* Begin PBXBuildFile section */
 		C14C8DD82B937D75004DDED8 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14C8DD72B937D75004DDED8 /* AppDelegate.swift */; };
 		C14C8DDA2B937D75004DDED8 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14C8DD92B937D75004DDED8 /* SceneDelegate.swift */; };
-		C14C8DDC2B937D75004DDED8 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14C8DDB2B937D75004DDED8 /* ViewController.swift */; };
+		C14C8DDC2B937D75004DDED8 /* ImagesListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C14C8DDB2B937D75004DDED8 /* ImagesListViewController.swift */; };
 		C14C8DDF2B937D75004DDED8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C14C8DDD2B937D75004DDED8 /* Main.storyboard */; };
 		C14C8DE12B937D76004DDED8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C14C8DE02B937D76004DDED8 /* Assets.xcassets */; };
 		C14C8DE42B937D76004DDED8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C14C8DE22B937D76004DDED8 /* LaunchScreen.storyboard */; };
+		C1E60EBC2B9459E100F40115 /* ImagesListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E60EBB2B9459E100F40115 /* ImagesListCell.swift */; };
+		C1E60EBE2B95B09500F40115 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = C1E60EBD2B95B09500F40115 /* .swiftlint.yml */; };
+		C1E60EC52B95B43800F40115 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E60EC42B95B43800F40115 /* Date+Extensions.swift */; };
+		C1E60EC72B95BA7F00F40115 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E60EC62B95BA7F00F40115 /* Array+Extensions.swift */; };
+		C1E60EC92B95CFBD00F40115 /* Gradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1E60EC82B95CFBD00F40115 /* Gradient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C14C8DD42B937D75004DDED8 /* Pictorium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pictorium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C14C8DD72B937D75004DDED8 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C14C8DD92B937D75004DDED8 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		C14C8DDB2B937D75004DDED8 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		C14C8DDB2B937D75004DDED8 /* ImagesListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListViewController.swift; sourceTree = "<group>"; };
 		C14C8DDE2B937D75004DDED8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C14C8DE02B937D76004DDED8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C14C8DE32B937D76004DDED8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C14C8DE52B937D76004DDED8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C1E60EBB2B9459E100F40115 /* ImagesListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesListCell.swift; sourceTree = "<group>"; };
+		C1E60EBD2B95B09500F40115 /* .swiftlint.yml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
+		C1E60EC42B95B43800F40115 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		C1E60EC62B95BA7F00F40115 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
+		C1E60EC82B95CFBD00F40115 /* Gradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Gradient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +50,7 @@
 		C14C8DCB2B937D75004DDED8 = {
 			isa = PBXGroup;
 			children = (
+				C1E60EBD2B95B09500F40115 /* .swiftlint.yml */,
 				C14C8DD62B937D75004DDED8 /* Pictorium */,
 				C14C8DD52B937D75004DDED8 /* Products */,
 			);
@@ -56,15 +67,59 @@
 		C14C8DD62B937D75004DDED8 /* Pictorium */ = {
 			isa = PBXGroup;
 			children = (
+				C1E60EBF2B95B31D00F40115 /* Models */,
+				C1E60EC02B95B32700F40115 /* Services */,
+				C1E60EC12B95B33300F40115 /* Presentation */,
+				C1E60EC22B95B33800F40115 /* Helpers */,
+				C1E60EC32B95B33D00F40115 /* Resources */,
 				C14C8DD72B937D75004DDED8 /* AppDelegate.swift */,
 				C14C8DD92B937D75004DDED8 /* SceneDelegate.swift */,
-				C14C8DDB2B937D75004DDED8 /* ViewController.swift */,
-				C14C8DDD2B937D75004DDED8 /* Main.storyboard */,
-				C14C8DE02B937D76004DDED8 /* Assets.xcassets */,
-				C14C8DE22B937D76004DDED8 /* LaunchScreen.storyboard */,
 				C14C8DE52B937D76004DDED8 /* Info.plist */,
 			);
 			path = Pictorium;
+			sourceTree = "<group>";
+		};
+		C1E60EBF2B95B31D00F40115 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C1E60EC02B95B32700F40115 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		C1E60EC12B95B33300F40115 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				C1E60EBB2B9459E100F40115 /* ImagesListCell.swift */,
+				C14C8DDB2B937D75004DDED8 /* ImagesListViewController.swift */,
+				C14C8DDD2B937D75004DDED8 /* Main.storyboard */,
+				C1E60EC82B95CFBD00F40115 /* Gradient.swift */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		C1E60EC22B95B33800F40115 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				C1E60EC62B95BA7F00F40115 /* Array+Extensions.swift */,
+				C1E60EC42B95B43800F40115 /* Date+Extensions.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		C1E60EC32B95B33D00F40115 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C14C8DE22B937D76004DDED8 /* LaunchScreen.storyboard */,
+				C14C8DE02B937D76004DDED8 /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,6 +132,7 @@
 				C14C8DD02B937D75004DDED8 /* Sources */,
 				C14C8DD12B937D75004DDED8 /* Frameworks */,
 				C14C8DD22B937D75004DDED8 /* Resources */,
+				C18038732B95D6360045BAB1 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -125,6 +181,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C1E60EBE2B95B09500F40115 /* .swiftlint.yml in Resources */,
 				C14C8DE42B937D76004DDED8 /* LaunchScreen.storyboard in Resources */,
 				C14C8DE12B937D76004DDED8 /* Assets.xcassets in Resources */,
 				C14C8DDF2B937D75004DDED8 /* Main.storyboard in Resources */,
@@ -133,13 +190,38 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		C18038732B95D6360045BAB1 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		C14C8DD02B937D75004DDED8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C14C8DDC2B937D75004DDED8 /* ViewController.swift in Sources */,
+				C14C8DDC2B937D75004DDED8 /* ImagesListViewController.swift in Sources */,
+				C1E60EC72B95BA7F00F40115 /* Array+Extensions.swift in Sources */,
+				C1E60EBC2B9459E100F40115 /* ImagesListCell.swift in Sources */,
+				C1E60EC92B95CFBD00F40115 /* Gradient.swift in Sources */,
 				C14C8DD82B937D75004DDED8 /* AppDelegate.swift in Sources */,
+				C1E60EC52B95B43800F40115 /* Date+Extensions.swift in Sources */,
 				C14C8DDA2B937D75004DDED8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,7 +300,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -275,7 +357,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -293,13 +375,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 93CLJN9JG4;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pictorium/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -307,9 +390,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mocki-toki.Pictorium";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -321,13 +406,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 93CLJN9JG4;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pictorium/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -335,9 +421,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mocki-toki.Pictorium";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
