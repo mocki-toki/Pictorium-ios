@@ -24,7 +24,7 @@ final class ImagesListCell: UITableViewCell {
         cellImage.image = image
         dateLabel.text = Date().formatToString()
 
-        let likeIcon = indexPath.row % 2 != 0 ? UIImage.favoritesActive : UIImage.favoritesNoActive
+        let likeIcon = indexPath.row % 2 == 0 ? UIImage.favoritesActive : UIImage.favoritesNoActive
         likeButton.setImage(likeIcon, for: .normal)
     }
 }
