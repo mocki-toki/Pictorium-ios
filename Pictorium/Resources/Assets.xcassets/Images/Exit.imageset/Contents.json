@@ -1,6 +1,7 @@
 {
-  "colors" : [
+  "images" : [
     {
+      "filename" : "Exit.svg",
       "idiom" : "universal"
     }
   ],

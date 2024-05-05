@@ -8,6 +8,10 @@
 import UIKit
 
 final class ImagesListViewController: UIViewController {
+    // MARK: - Constants
+
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
+
     // MARK: - IBOutlet
 
     @IBOutlet private var tableView: UITableView!
@@ -16,7 +20,7 @@ final class ImagesListViewController: UIViewController {
 
     private let photosName: [String] = Array(0 ... 19).map { "\($0)" }
 
-    // MARK: - UIViewController Lifecycle
+    // MARK: - UIViewController
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +45,28 @@ extension ImagesListViewController: UITableViewDelegate {
         let scale = imageViewWidth / imageWidth
         let cellHeight = image.size.height * scale + imageInsets.top + imageInsets.bottom
         return cellHeight
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard
+                let viewController = segue.destination as? SingleImageViewController,
+                let indexPath = sender as? IndexPath
+            else {
+                assertionFailure("Invalid segue destination")
+                return
+            }
+
+            let image = UIImage(named: photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+            // Если это неизвестный сегвей, есть вероятность, что он был определён суперклассом (то есть родительским классом). В таком случае мы должны передать ему управление.
+        }
     }
 }
 
