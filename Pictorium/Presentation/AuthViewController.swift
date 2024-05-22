@@ -8,12 +8,12 @@
 import UIKit
 
 protocol AuthViewControllerDelegate: AnyObject {
-    func didAuthenticate(_ vc: AuthViewController)
+    func didAuthenticate(_ viewController: AuthViewController)
 }
 
 final class AuthViewController: UIViewController {
     weak var delegate: AuthViewControllerDelegate?
-    private let oauthService = OAuth2Service()
+    private let oauthService = OAuth2Service.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,8 +36,8 @@ final class AuthViewController: UIViewController {
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
-    func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
-        vc.dismiss(animated: true) { [weak self] in
+    func webViewViewController(_ viewController: WebViewViewController, didAuthenticateWithCode code: String) {
+        viewController.dismiss(animated: true) { [weak self] in
             guard let self = self else { return }
             self.oauthService.fetchOAuthToken(with: code) { result in
                 switch result {
@@ -51,7 +51,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
         }
     }
 
-    func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
+    func webViewViewControllerDidCancel(_ viewController: WebViewViewController) {
         dismiss(animated: true, completion: nil)
     }
 }

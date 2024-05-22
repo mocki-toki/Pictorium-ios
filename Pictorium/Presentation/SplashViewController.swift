@@ -47,8 +47,8 @@ final class SplashViewController: UIViewController {
 }
 
 extension SplashViewController: AuthViewControllerDelegate {
-    func didAuthenticate(_ vc: AuthViewController) {
-        vc.dismiss(animated: true) {
+    func didAuthenticate(_ viewController: AuthViewController) {
+        viewController.dismiss(animated: true) {
             self.switchToTabBarController()
         }
     }
