@@ -22,12 +22,10 @@ final class SingleImageViewController: UIViewController {
         }
     }
 
-    // MARK: - IBOutlet
+    // MARK: - IBOutlets
 
     @IBOutlet private var imageView: UIImageView!
-
     @IBOutlet private var didTapBackButton: UIButton!
-
     @IBOutlet private var scrollView: UIScrollView!
 
     // MARK: - UIViewController
@@ -45,7 +43,7 @@ final class SingleImageViewController: UIViewController {
         scrollView.maximumZoomScale = 1.25
     }
 
-    // MARK: - IBAction
+    // MARK: - IBActions
 
     @IBAction private func didTapBackButton(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -82,6 +80,6 @@ final class SingleImageViewController: UIViewController {
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        imageView
+        return imageView
     }
 }
