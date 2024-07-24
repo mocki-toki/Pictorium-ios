@@ -110,7 +110,7 @@
         <!--Tab Bar View Controller-->
         <scene sceneID="fnc-nd-4fX">
             <objects>
-                <tabBarController storyboardIdentifier="TabBarViewController" id="tGy-bD-QS3" customClass="TabBarViewController" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabBarViewController" id="tGy-bD-QS3" customClass="TabBarViewController" customModule="Pictorium" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" backgroundImage="Active" id="jsR-ui-jwL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
