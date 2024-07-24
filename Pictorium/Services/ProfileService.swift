@@ -8,6 +8,7 @@
 import Foundation
 
 final class ProfileService {
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileProviderDidChange")
     static let shared = ProfileService()
     private init() {}
 
@@ -16,13 +17,13 @@ final class ProfileService {
     private let session: URLSession = .shared
     private let tokenStorage = OAuth2TokenStorage()
     private var task: URLSessionTask?
+    private(set) var profile: Profile?
 
     // MARK: - Public Methods
 
-    func fetchProfile(completion: @escaping (Result<Profile, Error>) -> Void) { assert(Thread.isMainThread)
-
+    func fetchProfile(_ completion: @escaping (Result<Profile, Error>) -> Void) {
+        assert(Thread.isMainThread)
         task?.cancel()
-        UIBlockingProgressHUD.show()
 
         guard let request = createMeRequest() else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -31,11 +32,18 @@ final class ProfileService {
 
         task = session.objectTask(for: request) { [weak self] (result: Result<MeResponseBody, Error>) in
             self?.task = nil
-            UIBlockingProgressHUD.dismiss()
 
             switch result {
             case .success(let body):
-                completion(.success(Profile(from: body)))
+                let profile = Profile(from: body)
+                self?.profile = profile
+                completion(.success(profile))
+
+                NotificationCenter.default
+                    .post(
+                        name: ProfileService.didChangeNotification,
+                        object: self,
+                        userInfo: ["Profile": profile])
             case .failure(let error):
                 completion(.failure(error))
             }
