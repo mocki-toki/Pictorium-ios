@@ -25,7 +25,7 @@ final class ProfileImageService {
         assert(Thread.isMainThread)
         task?.cancel()
 
-        guard let request = createProfileRequest(username: username) else {
+        guard let request = createUserRequest(username: username) else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }
@@ -54,7 +54,7 @@ final class ProfileImageService {
 
     // MARK: - Private Methods
 
-    private func createProfileRequest(username: String) -> URLRequest? {
+    private func createUserRequest(username: String) -> URLRequest? {
         guard let url = URL(string: "\(APIConfig.apiURL)/users/\(username)") else {
             return nil
         }
