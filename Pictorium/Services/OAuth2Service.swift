@@ -38,20 +38,18 @@ final class OAuth2Service {
         }
 
         task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
-            DispatchQueue.main.async {
-                self?.task = nil
-                self?.lastCode = nil
-                UIBlockingProgressHUD.dismiss()
+            self?.task = nil
+            self?.lastCode = nil
+            UIBlockingProgressHUD.dismiss()
 
-                switch result {
-                case .success(let body):
-                    let token = body.accessToken
+            switch result {
+            case .success(let body):
+                let token = body.accessToken
 
-                    self?.tokenStorage.token = token
-                    completion(.success(token))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+                self?.tokenStorage.token = token
+                completion(.success(token))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
 

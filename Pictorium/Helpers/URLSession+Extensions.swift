@@ -14,7 +14,7 @@ enum NetworkError: Error {
 }
 
 extension URLSession {
-    func data(
+    private func data(
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionTask {
@@ -57,7 +57,7 @@ extension URLSession {
                 case .success(let data):
                     let decodedData = try decoder.decode(T.self, from: data)
                     completion(.success(decodedData))
-                case .failure(let error):
+                case .failure:
                     break
                 }
             } catch {

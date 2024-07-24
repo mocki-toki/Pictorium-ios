@@ -31,23 +31,21 @@ final class ProfileImageService {
         }
 
         task = session.objectTask(for: request) { [weak self] (result: Result<UserResponseBody, Error>) in
-            DispatchQueue.main.async {
-                self?.task = nil
+            self?.task = nil
 
-                switch result {
-                case .success(let body):
-                    let profileImageURL = body.profileImage.small
-                    self?.avatarURL = profileImageURL
-                    completion(.success(body.profileImage.small))
+            switch result {
+            case .success(let body):
+                let profileImageURL = body.profileImage.small
+                self?.avatarURL = profileImageURL
+                completion(.success(body.profileImage.small))
 
-                    NotificationCenter.default
-                        .post(
-                            name: ProfileImageService.didChangeNotification,
-                            object: self,
-                            userInfo: ["URL": profileImageURL])
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+                NotificationCenter.default
+                    .post(
+                        name: ProfileImageService.didChangeNotification,
+                        object: self,
+                        userInfo: ["URL": profileImageURL])
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
 

@@ -7,22 +7,6 @@
 
 import Foundation
 
-struct Profile {
-    let username: String
-    let name: String
-    let loginName: String
-    let bio: String
-}
-
-extension Profile {
-    init(from meResponseBody: MeResponseBody) {
-        self.username = meResponseBody.username
-        self.name = "\(meResponseBody.firstName) \(meResponseBody.lastName)"
-        self.loginName = "@\(meResponseBody.username)"
-        self.bio = meResponseBody.bio ?? "Описание отсутствует"
-    }
-}
-
 final class ProfileService {
     static let shared = ProfileService()
     private init() {}
@@ -46,16 +30,14 @@ final class ProfileService {
         }
 
         task = session.objectTask(for: request) { [weak self] (result: Result<MeResponseBody, Error>) in
-            DispatchQueue.main.async {
-                self?.task = nil
-                UIBlockingProgressHUD.dismiss()
+            self?.task = nil
+            UIBlockingProgressHUD.dismiss()
 
-                switch result {
-                case .success(let body):
-                    completion(.success(Profile(from: body)))
-                case .failure(let error):
-                    completion(.failure(error))
-                }
+            switch result {
+            case .success(let body):
+                completion(.success(Profile(from: body)))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
 
