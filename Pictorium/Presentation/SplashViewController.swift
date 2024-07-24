@@ -51,13 +51,28 @@ final class SplashViewController: UIViewController {
     }
 
     private func switchToTabBarController() {
-        guard let window = UIApplication.shared.windows.first else {
-            assertionFailure("Invalid window configuration")
-            return
+        ProfileService.shared.fetchProfile { result in
+            switch result {
+            case .success(let profile):
+                ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { result in
+                    switch result {
+                    case .success:
+                        guard let window = UIApplication.shared.windows.first else {
+                            assertionFailure("Invalid window configuration")
+                            return
+                        }
+                        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
+                            .instantiateViewController(withIdentifier: "TabBarViewController")
+                        window.rootViewController = tabBarController
+
+                    case .failure:
+                        print("Failed to fetch profile image URL")
+                    }
+                }
+            case .failure:
+                print("Failed to fetch profile")
+            }
         }
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
-        window.rootViewController = tabBarController
     }
 
     private func presentAuthViewController() {

@@ -48,6 +48,7 @@ final class ProfileViewController: UIViewController {
         return button
     }()
 
+    private var profileServiceObserver: NSObjectProtocol?
     private var profileImageServiceObserver: NSObjectProtocol?
 
     // MARK: - Lifecycle
@@ -56,10 +57,18 @@ final class ProfileViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .ypBlack
 
-        loadMeResponseBody { profile in
-            self.setupViews(profile)
-            self.loadProfileImage(for: profile.username)
-        }
+        updateProfile()
+        updateAvatar()
+
+        profileServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileService.didChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateProfile()
+            }
 
         profileImageServiceObserver = NotificationCenter.default
             .addObserver(
@@ -133,24 +142,6 @@ final class ProfileViewController: UIViewController {
         ])
     }
 
-    private func loadMeResponseBody(completion: @escaping (_ profile: Profile) -> Void) {
-        return profileService.fetchProfile { result in
-            switch result {
-            case .success(let profile):
-                self.nameLabel.text = profile.name
-                self.usernameLabel.text = profile.loginName
-                self.descriptionLabel.text = profile.bio
-                completion(profile)
-            case .failure(let error):
-                print("Failed to load data: \(error)")
-            }
-        }
-    }
-
-    private func loadProfileImage(for username: String) {
-        profileImageService.fetchProfileImageURL(username: username) { _ in }
-    }
-
     private func updateAvatar() {
         guard let url = ProfileImageService.shared.avatarURL else { return }
 
@@ -162,5 +153,11 @@ final class ProfileViewController: UIViewController {
                 print("Download image failed: \(error)")
             }
         }
+    }
+
+    private func updateProfile() {
+        guard let profile = ProfileService.shared.profile else { return }
+
+        setupViews(profile)
     }
 }
