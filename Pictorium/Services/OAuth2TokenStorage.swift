@@ -17,11 +17,12 @@ final class OAuth2TokenStorage {
             keychain.string(forKey: tokenKey)
         }
         set {
-            if newValue == nil {
+            guard let newValue else {
                 keychain.remove(forKey: tokenKey)
-            } else {
-                keychain.set(newValue!, forKey: tokenKey.rawValue)
+                return
             }
+
+            keychain.set(newValue, forKey: tokenKey.rawValue)
         }
     }
 }
