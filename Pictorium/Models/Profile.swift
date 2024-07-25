@@ -15,7 +15,13 @@ struct Profile {
 extension Profile {
     init(from meResponseBody: MeResponseBody) {
         self.username = meResponseBody.username
-        self.name = "\(meResponseBody.firstName) \(meResponseBody.lastName)"
+
+        var name = meResponseBody.firstName
+        if let lastName = meResponseBody.lastName {
+            name.append(" \(lastName)")
+        }
+
+        self.name = name
         self.loginName = "@\(meResponseBody.username)"
         self.bio = meResponseBody.bio ?? "Описание отсутствует"
     }

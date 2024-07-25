@@ -10,6 +10,6 @@ import Foundation
 struct MeResponseBody: Decodable {
     let username: String
     let firstName: String
-    let lastName: String
+    let lastName: String?
     let bio: String?
 }
