@@ -49,6 +49,7 @@ final class OAuth2Service {
                 self?.tokenStorage.token = token
                 completion(.success(token))
             case .failure(let error):
+                print("OAuth2Service failure: \(error)")
                 completion(.failure(error))
             }
         }

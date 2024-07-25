@@ -47,6 +47,7 @@ final class ProfileService {
                         object: self,
                         userInfo: ["Profile": profile])
             case .failure(let error):
+                print("ProfileService failure: \(error)")
                 completion(.failure(error))
             }
         }
