@@ -1,5 +1,5 @@
 //
-//  OAuthTokenResponseBody.swift
+//  OAuthTokenResponse.swift
 //  Pictorium
 //
 //  Created by Simon Butenko on 21.05.2024.

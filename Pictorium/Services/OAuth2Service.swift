@@ -15,40 +15,46 @@ final class OAuth2Service {
 
     private let session: URLSession = .shared
     private let tokenStorage = OAuth2TokenStorage()
+    private var task: URLSessionTask?
+    private var lastCode: String?
 
     // MARK: - Public Methods
 
     func fetchOAuthToken(with code: String, completion: @escaping (Result<String, Error>) -> Void) {
+        assert(Thread.isMainThread)
+
+        guard lastCode != code else {
+            completion(.failure(NSError(domain: "Duplicate request", code: 0, userInfo: nil)))
+            return
+        }
+
+        task?.cancel()
+        lastCode = code
+
         guard let request = createTokenRequest(with: code) else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }
 
-        let task = session.data(for: request) { result in
+        UIBlockingProgressHUD.show()
+        task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+            self?.task = nil
+            self?.lastCode = nil
+            UIBlockingProgressHUD.dismiss()
 
             switch result {
-            case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    decoder.keyDecodingStrategy = .convertFromSnakeCase
+            case .success(let body):
+                let token = body.accessToken
 
-                    let responseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-
-                    let token = responseBody.accessToken
-                    self.tokenStorage.token = token
-
-                    completion(.success(token))
-                } catch {
-                    print("Decoding error: \(error)")
-                    completion(.failure(error))
-                }
+                self?.tokenStorage.token = token
+                completion(.success(token))
             case .failure(let error):
-                print("Network error: \(error)")
+                print("OAuth2Service failure: \(error)")
                 completion(.failure(error))
             }
         }
 
-        task.resume()
+        task?.resume()
     }
 
     // MARK: - Private Methods

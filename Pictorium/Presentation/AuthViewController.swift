@@ -12,26 +12,38 @@ protocol AuthViewControllerDelegate: AnyObject {
 }
 
 final class AuthViewController: UIViewController {
+    // MARK: - Public Properties
+
     weak var delegate: AuthViewControllerDelegate?
+
+    // MARK: - Private Properties
+
+    private var alertPresenter: AlertPresenterProtocol?
     private let oauthService = OAuth2Service.shared
+
+    // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         configureBackButton()
     }
 
-    private func configureBackButton() {
-        navigationController?.navigationBar.backIndicatorImage = UIImage.backward
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage.backward
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
-        navigationItem.backBarButtonItem?.tintColor = UIColor.ypBlack
-    }
+    // MARK: - Public Methods
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         if let webViewVC = segue.destination as? WebViewViewController {
             webViewVC.delegate = self
         }
+    }
+
+    // MARK: - Private Methods
+
+    private func configureBackButton() {
+        navigationController?.navigationBar.backIndicatorImage = UIImage.backward
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage.backward
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
+        navigationItem.backBarButtonItem?.tintColor = UIColor.ypBlack
     }
 }
 
@@ -46,6 +58,11 @@ extension AuthViewController: WebViewViewControllerDelegate {
                     self.delegate?.didAuthenticate(self)
                 case .failure(let error):
                     print("Failed to fetch token: \(error)")
+                    self.alertPresenter?.show(
+                        title: "Что-то пошло не так",
+                        message: "Не удалось войти в систему",
+                        buttonText: "Ок"
+                    )
                 }
             }
         }

@@ -9,14 +9,18 @@ import UIKit
 import WebKit
 
 final class WebViewViewController: UIViewController {
+    // MARK: - Private Properties
+
+    private var estimatedProgressObservation: NSKeyValueObservation?
+
+    // MARK: - Public Properties
+
+    weak var delegate: WebViewViewControllerDelegate?
+
     // MARK: - IBOutlets
 
     @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
-
-    // MARK: - Properties
-
-    weak var delegate: WebViewViewControllerDelegate?
 
     // MARK: - Lifecycle
 
@@ -27,32 +31,17 @@ final class WebViewViewController: UIViewController {
         loadAuthView()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        removeObservers()
-    }
-
-    override func observeValue(
-        forKeyPath keyPath: String?,
-        of object: Any?,
-        change: [NSKeyValueChangeKey: Any]?,
-        context: UnsafeMutableRawPointer?
-    ) {
-        if keyPath == #keyPath(WKWebView.estimatedProgress) {
-            updateProgress()
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
-
     // MARK: - Private Methods
 
     private func setupObservers() {
-        webView.addObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), options: .new, context: nil)
-    }
-
-    private func removeObservers() {
-        webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress))
+        estimatedProgressObservation = webView.observe(
+            \.estimatedProgress,
+            options: [],
+            changeHandler: { [weak self] _, _ in
+                guard let self = self else { return }
+                self.updateProgress()
+            }
+        )
     }
 
     private func updateProgress() {
@@ -61,7 +50,7 @@ final class WebViewViewController: UIViewController {
     }
 
     private func loadAuthView() {
-        var urlComponents = URLComponents(string: APIConfig.unsplashAuthorizeURLString)!
+        var urlComponents = URLComponents(string: APIConfig.authorizeURL)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: APIConfig.accessKey),
             URLQueryItem(name: "redirect_uri", value: APIConfig.redirectURI),
