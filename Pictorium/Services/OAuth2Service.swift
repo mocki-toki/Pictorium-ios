@@ -30,13 +30,13 @@ final class OAuth2Service {
 
         task?.cancel()
         lastCode = code
-        UIBlockingProgressHUD.show()
 
         guard let request = createTokenRequest(with: code) else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }
 
+        UIBlockingProgressHUD.show()
         task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
             self?.task = nil
             self?.lastCode = nil

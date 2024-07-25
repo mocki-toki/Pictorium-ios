@@ -30,8 +30,10 @@ final class ProfileImageService {
             return
         }
 
+        UIBlockingProgressHUD.show()
         task = session.objectTask(for: request) { [weak self] (result: Result<UserResponseBody, Error>) in
             self?.task = nil
+            UIBlockingProgressHUD.dismiss()
 
             switch result {
             case .success(let body):
