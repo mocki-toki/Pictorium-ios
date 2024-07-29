@@ -12,6 +12,20 @@ final class ImagesListCell: UITableViewCell {
 
     static let reuseIdentifier = "ImagesListCell"
 
+    // MARK: - Private Properties
+
+    private let service = ImagesListService.shared
+    private var likeIsChanging = false
+    private var photo: Photo?
+    private var isLiked: Bool {
+        set {
+            likeButton.setImage(newValue ? .favoritesActive : .favoritesNoActive, for: .normal)
+        }
+        get {
+            likeButton.imageView?.image == UIImage.favoritesActive
+        }
+    }
+
     // MARK: - IBOutlets
 
     @IBOutlet private var cellImage: UIImageView!
@@ -20,11 +34,46 @@ final class ImagesListCell: UITableViewCell {
 
     // MARK: - Public Methods
 
-    func configure(with indexPath: IndexPath, image: UIImage) {
-        cellImage.image = image
-        dateLabel.text = Date().formatToString()
+    func configure(with indexPath: IndexPath, show photo: Photo) {
+        self.photo = photo
 
-        let likeIcon = indexPath.row % 2 == 0 ? UIImage.favoritesActive : UIImage.favoritesNoActive
-        likeButton.setImage(likeIcon, for: .normal)
+        dateLabel.text = photo.createdAt.formatToString()
+        isLiked = photo.isLiked
+
+        cellImage.kf.indicatorType = .custom(indicator: CustomActivityIndicator(frame: .zero))
+        cellImage.kf.setImage(with: photo.thumbImageURL) { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                print("Load image error: \(error)")
+            }
+        }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cellImage.kf.cancelDownloadTask()
+    }
+
+    // MARK: - Actions
+
+    @IBAction private func didTabLikeButton(_ sender: Any) {
+        if likeIsChanging { return }
+        guard let photo = photo else { return }
+
+        likeIsChanging = true
+        isLiked.toggle()
+        service.changeLike(photoId: photo.id, isLike: isLiked) { [weak self] result in
+            guard let self = self else { return }
+            self.likeIsChanging = false
+
+            switch result {
+            case .success(let photo):
+                self.isLiked = photo.isLiked
+            case .failure:
+                break
+            }
+        }
     }
 }

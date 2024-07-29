@@ -8,18 +8,29 @@
 import Foundation
 
 final class ProfileImageService {
-    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
-    static let shared = ProfileImageService()
     private init() {}
 
-    // MARK: - Properties
+    // MARK: - Private Properties
 
     private let session: URLSession = .shared
     private let tokenStorage = OAuth2TokenStorage()
     private var task: URLSessionTask?
     private(set) var avatarURL: URL?
 
+    // MARK: - Public Properties
+
+    static let shared = ProfileImageService()
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+
     // MARK: - Public Methods
+
+    func cleanProfileImageURL() {
+        avatarURL = nil
+        NotificationCenter.default
+            .post(
+                name: ProfileImageService.didChangeNotification,
+                object: self)
+    }
 
     func fetchProfileImageURL(username: String, _ completion: @escaping (Result<URL, Error>) -> Void) {
         assert(Thread.isMainThread)
@@ -44,8 +55,7 @@ final class ProfileImageService {
                 NotificationCenter.default
                     .post(
                         name: ProfileImageService.didChangeNotification,
-                        object: self,
-                        userInfo: ["URL": profileImageURL])
+                        object: self)
             case .failure(let error):
                 print("ProfileImageService failure: \(error)")
                 completion(.failure(error))

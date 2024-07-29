@@ -21,6 +21,14 @@ final class ProfileService {
 
     // MARK: - Public Methods
 
+    func cleanProfile() {
+        profile = nil
+        NotificationCenter.default
+            .post(
+                name: ProfileService.didChangeNotification,
+                object: self)
+    }
+
     func fetchProfile(_ completion: @escaping (Result<Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         task?.cancel()
@@ -44,8 +52,7 @@ final class ProfileService {
                 NotificationCenter.default
                     .post(
                         name: ProfileService.didChangeNotification,
-                        object: self,
-                        userInfo: ["Profile": profile])
+                        object: self)
             case .failure(let error):
                 print("ProfileService failure: \(error)")
                 completion(.failure(error))

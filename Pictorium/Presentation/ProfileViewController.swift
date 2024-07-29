@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
 
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private var alertPresenter: AlertPresenterProtocol?
 
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -55,8 +56,9 @@ final class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypBlack
+        alertPresenter = AlertPresenter(viewController: self)
 
+        view.backgroundColor = .ypBlack
         updateProfile()
         updateAvatar()
 
@@ -136,10 +138,30 @@ final class ProfileViewController: UIViewController {
     }
 
     private func configureExitButton() {
+        exitButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+
         NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
             exitButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor)
         ])
+    }
+
+    @objc private func buttonTapped() {
+        alertPresenter?.show(
+            title: "Вы уверены, что хотите выйти из аккаунта?",
+            message: nil,
+            buttons: [
+                ("Да", {
+                    ProfileLogoutService.shared.logout()
+                    guard let window = UIApplication.shared.windows.first else {
+                        assertionFailure("Invalid window configuration")
+                        return
+                    }
+                    window.rootViewController = SplashViewController()
+                }),
+                ("Нет", nil)
+            ]
+        )
     }
 
     private func updateAvatar() {

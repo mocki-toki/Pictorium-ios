@@ -8,7 +8,7 @@
 import UIKit
 
 protocol AlertPresenterProtocol {
-    func show(title: String, message: String, buttonText: String)
+    func show(title: String, message: String?, buttons: [(title: String, action: (() -> Void)?)])
 }
 
 final class AlertPresenter: AlertPresenterProtocol {
@@ -24,7 +24,7 @@ final class AlertPresenter: AlertPresenterProtocol {
 
     // MARK: - Public Methods
 
-    func show(title: String, message: String, buttonText: String) {
+    func show(title: String, message: String?, buttons: [(title: String, action: (() -> Void)?)]) {
         let alert = UIAlertController(
             title: title,
             message: message,
@@ -32,9 +32,12 @@ final class AlertPresenter: AlertPresenterProtocol {
         )
         alert.view.accessibilityIdentifier = "Alert"
 
-        alert.addAction(
-            UIAlertAction(title: buttonText, style: .default)
-        )
+        for button in buttons {
+            let alertAction = UIAlertAction(title: button.title, style: .default) { _ in
+                button.action?()
+            }
+            alert.addAction(alertAction)
+        }
 
         viewController?.present(alert, animated: true, completion: nil)
     }

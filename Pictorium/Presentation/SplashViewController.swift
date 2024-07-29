@@ -51,7 +51,8 @@ final class SplashViewController: UIViewController {
     }
 
     private func switchToTabBarController() {
-        ProfileService.shared.fetchProfile { result in
+        ProfileService.shared.fetchProfile { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let profile):
                 ProfileImageService.shared.fetchProfileImageURL(username: profile.username) { result in
