@@ -18,11 +18,12 @@ final class ImagesListCell: UITableViewCell {
     private var likeIsChanging = false
     private var photo: Photo?
     private var isLiked: Bool {
-        set {
-            likeButton.setImage(newValue ? .favoritesActive : .favoritesNoActive, for: .normal)
-        }
         get {
             likeButton.imageView?.image == UIImage.favoritesActive
+        }
+        set {
+            likeButton.setImage(newValue ? .favoritesActive : .favoritesNoActive, for: .normal)
+            likeButton.accessibilityIdentifier = newValue ? "likeActive" : "likeNoActive"
         }
     }
 
@@ -41,7 +42,13 @@ final class ImagesListCell: UITableViewCell {
         isLiked = photo.isLiked
 
         cellImage.kf.indicatorType = .custom(indicator: CustomActivityIndicator(frame: .zero))
-        cellImage.kf.setImage(with: photo.thumbImageURL) { result in
+        cellImage.kf.setImage(
+            with: photo.thumbImageURL,
+            options: [
+                .transition(.fade(0.5)),
+                .forceTransition
+            ]
+        ) { result in
             switch result {
             case .success:
                 break
@@ -59,7 +66,8 @@ final class ImagesListCell: UITableViewCell {
     // MARK: - Actions
 
     @IBAction private func didTabLikeButton(_ sender: Any) {
-        guard likeIsChanging, let photo else { return }
+        if likeIsChanging { return }
+        guard let photo = photo else { return }
 
         likeIsChanging = true
         isLiked.toggle()

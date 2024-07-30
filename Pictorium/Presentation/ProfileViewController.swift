@@ -7,12 +7,35 @@
 import Kingfisher
 import UIKit
 
-final class ProfileViewController: UIViewController {
-    // MARK: - Private Properties
+enum ProfileViewControllerFactory {
+    static func makeController() -> ProfileViewController {
+        let viewController = ProfileViewController()
 
-    private let profileService = ProfileService.shared
-    private let profileImageService = ProfileImageService.shared
-    private var alertPresenter: AlertPresenterProtocol?
+        let presenter = ProfilePresenter(
+            profileService: ProfileService.shared,
+            profileImageService: ProfileImageService.shared,
+            logoutService: ProfileLogoutService.shared
+        )
+
+        viewController.presenter = presenter
+        presenter.view = viewController
+
+        return viewController
+    }
+}
+
+protocol ProfileViewControllerProtocol: AnyObject {
+    func updateProfileDetails(profile: Profile)
+    func updateAvatar(url: URL)
+    func showLogoutAlert(completion: @escaping () -> Void)
+}
+
+final class ProfileViewController: UIViewController {
+    // MARK: - Properties
+
+    var presenter: ProfilePresenterProtocol!
+
+    // MARK: - UI Components
 
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -22,30 +45,33 @@ final class ProfileViewController: UIViewController {
         return imageView
     }()
 
-    private let nameLabel: UILabel = {
+    let nameLabel: UILabel = {
         let label = UILabel()
         label.textColor = UIColor.ypWhite
         label.font = UIFont.systemFont(ofSize: 23, weight: .bold)
+        label.accessibilityIdentifier = "First name Last name"
         return label
     }()
 
-    private let usernameLabel: UILabel = {
+    let usernameLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypGray
         label.font = .systemFont(ofSize: 13, weight: .regular)
+        label.accessibilityIdentifier = "Username"
         return label
     }()
 
-    private let descriptionLabel: UILabel = {
+    let descriptionLabel: UILabel = {
         let label = UILabel()
         label.textColor = .ypWhite
         label.font = .systemFont(ofSize: 13, weight: .regular)
         return label
     }()
 
-    private let exitButton: UIButton = {
-        let button = UIButton.systemButton(with: UIImage.exit, target: nil, action: nil)
+    lazy var exitButton: UIButton = {
+        let button = UIButton.systemButton(with: UIImage.exit, target: self, action: #selector(exitButtonTapped))
         button.tintColor = .ypRed
+        button.accessibilityIdentifier = "Logout button"
         return button
     }()
 
@@ -53,132 +79,71 @@ final class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        alertPresenter = AlertPresenter(viewController: self)
-
-        view.backgroundColor = .ypBlack
-        updateProfile()
-        updateAvatar()
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(profileDidChange(_:)),
-            name: ProfileService.didChangeNotification,
-            object: nil
-        )
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(profileImageDidChange(_:)),
-            name: ProfileImageService.didChangeNotification,
-            object: nil
-        )
-    }
-
-    @objc private func profileDidChange(_ notification: Notification) {
-        updateProfile()
-    }
-
-    @objc private func profileImageDidChange(_ notification: Notification) {
-        updateAvatar()
+        setupViews()
+        presenter.viewDidLoad()
     }
 
     // MARK: - Private Methods
 
-    private func setupViews(_ profile: Profile) {
-        [
-            profileImageView,
-            nameLabel,
-            usernameLabel,
-            descriptionLabel,
-            exitButton
-        ].forEach {
-            $0.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview($0)
+    private func setupViews() {
+        view.backgroundColor = .ypBlack
+
+        for item in [profileImageView, nameLabel, usernameLabel, descriptionLabel, exitButton] {
+            item.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(item)
         }
 
-        configureProfileImageView(username: profile.username)
-        configureNameLabel(value: profile.name)
-        configureUsernameLabel(value: profile.loginName)
-        configureDescriptionLabel(value: profile.bio)
-        configureExitButton()
-    }
-
-    private func configureProfileImageView(username: String) {
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 32),
             profileImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             profileImageView.widthAnchor.constraint(equalToConstant: 70),
-            profileImageView.heightAnchor.constraint(equalToConstant: 70)
-        ])
-    }
+            profileImageView.heightAnchor.constraint(equalToConstant: 70),
 
-    private func configureNameLabel(value name: String) {
-        nameLabel.text = name
-        NSLayoutConstraint.activate([
+            nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8),
             nameLabel.leadingAnchor.constraint(equalTo: profileImageView.leadingAnchor),
-            nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: 8)
-        ])
-    }
 
-    private func configureUsernameLabel(value username: String) {
-        usernameLabel.text = username
-        NSLayoutConstraint.activate([
+            usernameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8),
             usernameLabel.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            usernameLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8)
-        ])
-    }
 
-    private func configureDescriptionLabel(value description: String) {
-        descriptionLabel.text = description
-        NSLayoutConstraint.activate([
+            descriptionLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 8),
             descriptionLabel.leadingAnchor.constraint(equalTo: usernameLabel.leadingAnchor),
-            descriptionLabel.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 8)
-        ])
-    }
 
-    private func configureExitButton() {
-        exitButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-
-        NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
             exitButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor)
         ])
     }
 
-    @objc private func buttonTapped() {
-        alertPresenter?.show(
+    @objc private func exitButtonTapped() {
+        presenter.didTapExitButton()
+    }
+}
+
+// MARK: - ProfileViewControllerProtocol
+
+extension ProfileViewController: ProfileViewControllerProtocol {
+    func updateProfileDetails(profile: Profile) {
+        nameLabel.text = profile.name
+        usernameLabel.text = profile.loginName
+        descriptionLabel.text = profile.bio
+    }
+
+    func updateAvatar(url: URL) {
+        profileImageView.kf.setImage(with: url)
+    }
+
+    func showLogoutAlert(completion: @escaping () -> Void) {
+        let alert = UIAlertController(
             title: "Пока, пока!",
             message: "Уверены что хотите выйти?",
-            buttons: [
-                ("Да", {
-                    ProfileLogoutService.shared.logout()
-                    guard let window = UIApplication.shared.windows.first else {
-                        assertionFailure("Invalid window configuration")
-                        return
-                    }
-                    window.rootViewController = SplashViewController()
-                }),
-                ("Нет", nil)
-            ]
+            preferredStyle: .alert
         )
-    }
 
-    private func updateAvatar() {
-        guard let url = ProfileImageService.shared.avatarURL else { return }
+        alert.addAction(UIAlertAction(title: "Да", style: .destructive) { _ in
+            completion()
+        })
 
-        profileImageView.kf.setImage(with: url) { result in
-            switch result {
-            case .success:
-                break
-            case .failure(let error):
-                print("Download image failed: \(error)")
-            }
-        }
-    }
+        alert.addAction(UIAlertAction(title: "Нет", style: .cancel))
 
-    private func updateProfile() {
-        guard let profile = ProfileService.shared.profile else { return }
-
-        setupViews(profile)
+        present(alert, animated: true)
     }
 }
