@@ -23,7 +23,6 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private var imageView: UIImageView!
     @IBOutlet private var didTapBackButton: UIButton!
     @IBOutlet private var scrollView: UIScrollView!
-    @IBOutlet private var activityIndicator: CustomActivityIndicator!
     @IBOutlet private var shareButton: UIButton!
 
     // MARK: - UIViewController
@@ -60,13 +59,10 @@ final class SingleImageViewController: UIViewController {
 
     private func loadImage() {
         guard let url = photo?.largeImageURL else { return }
-        activityIndicator.startAnimatingView()
         UIBlockingProgressHUD.show()
 
         imageView.kf.setImage(with: url) { [weak self] result in
             guard let self = self else { return }
-            self.activityIndicator.stopAnimatingView()
-            self.activityIndicator.isHidden = true
             self.shareButton.isHidden = false
             UIBlockingProgressHUD.dismiss()
 
@@ -115,7 +111,7 @@ final class SingleImageViewController: UIViewController {
 
 extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        return imageView
+        imageView
     }
 
     func scrollViewDidZoom(_ scrollView: UIScrollView) {

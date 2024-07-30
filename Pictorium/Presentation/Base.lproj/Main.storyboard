@@ -169,11 +169,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iva-fF-v1e" customClass="CustomActivityIndicator" customModule="Pictorium" customModuleProvider="target">
-                                <rect key="frame" x="157" y="399" width="100" height="100"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="c6i-Eh-z1Q">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <subviews>
@@ -228,7 +223,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="NAv-Sf-Bnf"/>
                     <connections>
-                        <outlet property="activityIndicator" destination="iva-fF-v1e" id="Ih2-oj-q8u"/>
                         <outlet property="didTapBackButton" destination="KTf-1n-NnS" id="NjP-52-fep"/>
                         <outlet property="imageView" destination="oM3-w4-hAh" id="KRe-A1-Lj8"/>
                         <outlet property="scrollView" destination="c6i-Eh-z1Q" id="9XX-h4-8r7"/>

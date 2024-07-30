@@ -27,78 +27,77 @@ final class ImagesListService {
 
     func cleanPhotos() {
         photos.removeAll()
-        NotificationCenter.default
-            .post(
-                name: ImagesListService.didChangeNotification,
-                object: self)
+        NotificationCenter.default.post(
+            name: ImagesListService.didChangeNotification,
+            object: self)
     }
 
     func fetchPhotosNextPage() {
-        assert(Thread.isMainThread)
-        fetchPhotosTask?.cancel()
+        onMainThread {
+            guard self.fetchPhotosTask == nil else { return }
 
-        let nextPage = (lastLoadedPage ?? 0) + 1
-        guard let request = createPhotosRequest(page: nextPage) else {
-            print("ImagesListService fetchPhotosNextPage failure: Invalid URL")
-            return
-        }
+            let nextPage = (self.lastLoadedPage ?? 0) + 1
+            guard let request = self.createPhotosRequest(page: nextPage) else {
+                print("ImagesListService fetchPhotosNextPage failure: Invalid URL")
+                return
+            }
 
-        fetchPhotosTask = session.objectTask(for: request) { [weak self] (result: Result<[PhotoResponseBody], Error>) in
-            self?.fetchPhotosTask = nil
+            self.fetchPhotosTask = self.session.objectTask(for: request) {
+                [weak self] (result: Result<[PhotoResult], Error>) in
+                self?.fetchPhotosTask = nil
 
-            switch result {
-            case .success(let body):
-                let photos = body.map { Photo(from: $0) }
-                self?.photos.append(contentsOf: photos)
-                self?.lastLoadedPage = nextPage
+                switch result {
+                case .success(let result):
+                    let photos = result.map { Photo(from: $0) }
+                    self?.photos.append(contentsOf: photos)
+                    self?.lastLoadedPage = nextPage
 
-                NotificationCenter.default
-                    .post(
+                    NotificationCenter.default.post(
                         name: ImagesListService.didChangeNotification,
                         object: self)
-            case .failure(let error):
-                print("ImagesListService fetchPhotosNextPage failure: \(error)")
+                case .failure(let error):
+                    print("ImagesListService fetchPhotosNextPage failure: \(error)")
+                }
             }
-        }
 
-        fetchPhotosTask?.resume()
+            self.fetchPhotosTask?.resume()
+        }
     }
 
     func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Photo, Error>) -> Void) {
-        assert(Thread.isMainThread)
-        assert(likedPhotoId != photoId)
+        if likedPhotoId != photoId { return }
+        onMainThread {
+            guard let request = self.createLikeRequest(photoId: photoId, isLike: isLike) else {
+                print("ImagesListService changeLike failure: Invalid URL")
+                return
+            }
 
-        guard let request = createLikeRequest(photoId: photoId, isLike: isLike) else {
-            print("ImagesListService changeLike failure: Invalid URL")
-            return
-        }
+            self.likedPhotoId = photoId
+            let changeLikeTask = self.session.objectTask(for: request) {
+                [weak self] (result: Result<ChangeLikePhotoResult, Error>) in
+                guard let self = self else { return }
 
-        likedPhotoId = photoId
-        let changeLikeTask = session.objectTask(for: request) {
-            [weak self] (result: Result<ChangeLikePhotoResponseBody, Error>) in
-            guard let self = self else { return }
+                self.likedPhotoId = nil
+                switch result {
+                case .success(let result):
+                    let photo = Photo(from: result)
+                    completion(.success(photo))
 
-            self.likedPhotoId = nil
-            switch result {
-            case .success(let body):
-                let photo = Photo(from: body)
-                completion(.success(photo))
+                    if let index = self.photos.firstIndex(where: { $0.id == photo.id }) {
+                        self.photos[index] = photo
 
-                if let index = self.photos.firstIndex(where: { $0.id == photo.id }) {
-                    self.photos[index] = photo
-
-                    NotificationCenter.default
-                        .post(
+                        NotificationCenter.default.post(
                             name: ImagesListService.didChangeNotification,
                             object: self)
+                    }
+                case .failure(let error):
+                    completion(.failure(error))
+                    print("ImagesListService changeLike failure: \(error)")
                 }
-            case .failure(let error):
-                completion(.failure(error))
-                print("ImagesListService changeLike failure: \(error)")
             }
-        }
 
-        changeLikeTask.resume()
+            changeLikeTask.resume()
+        }
     }
 
     // MARK: - Private Methods

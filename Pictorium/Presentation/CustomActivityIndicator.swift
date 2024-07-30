@@ -8,12 +8,10 @@
 import Kingfisher
 import UIKit
 
-class CustomActivityIndicator: UIView, Indicator {
+final class CustomActivityIndicator: UIView, Indicator {
     private var imageView: UIImageView?
 
-    var view: IndicatorView {
-        return self
-    }
+    var view: IndicatorView { self }
 
     func startAnimatingView() {
         isHidden = false
@@ -38,15 +36,17 @@ class CustomActivityIndicator: UIView, Indicator {
     private func setupImageView() {
         let image = UIImage.stub
         imageView = UIImageView(image: image)
-        imageView?.contentMode = .scaleAspectFit
-        imageView?.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(imageView!)
+        guard let imageView else { return }
+
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(imageView)
 
         NSLayoutConstraint.activate([
-            imageView!.centerXAnchor.constraint(equalTo: centerXAnchor),
-            imageView!.centerYAnchor.constraint(equalTo: centerYAnchor),
-            imageView!.widthAnchor.constraint(equalToConstant: 50),
-            imageView!.heightAnchor.constraint(equalToConstant: 50)
+            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            imageView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 50),
+            imageView.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
 

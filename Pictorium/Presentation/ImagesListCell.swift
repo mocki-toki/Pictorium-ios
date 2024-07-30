@@ -37,7 +37,7 @@ final class ImagesListCell: UITableViewCell {
     func configure(with indexPath: IndexPath, show photo: Photo) {
         self.photo = photo
 
-        dateLabel.text = photo.createdAt.formatToString()
+        dateLabel.text = photo.createdAt?.formatToString() ?? ""
         isLiked = photo.isLiked
 
         cellImage.kf.indicatorType = .custom(indicator: CustomActivityIndicator(frame: .zero))
@@ -59,8 +59,7 @@ final class ImagesListCell: UITableViewCell {
     // MARK: - Actions
 
     @IBAction private func didTabLikeButton(_ sender: Any) {
-        if likeIsChanging { return }
-        guard let photo = photo else { return }
+        guard likeIsChanging, let photo else { return }
 
         likeIsChanging = true
         isLiked.toggle()

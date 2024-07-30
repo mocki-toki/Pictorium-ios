@@ -1,5 +1,5 @@
 //
-//  PhotoResponseBody.swift
+//  PhotoResult.swift
 //  Pictorium
 //
 //  Created by Simon Butenko on 26.07.2024.
@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct PhotoResponseBody: Decodable {
+struct PhotoResult: Decodable {
     let id: String
-    let createdAt: String
+    let createdAt: String?
     let width: Int
     let height: Int
     let color: String
@@ -17,11 +17,11 @@ struct PhotoResponseBody: Decodable {
     let likes: Int
     let likedByUser: Bool
     let description: String?
-    let user: UserResponseBody
-    let urls: URLs
+    let user: UserResult
+    let urls: UrlsResult
 }
 
-struct URLs: Decodable {
+struct UrlsResult: Decodable {
     let raw: URL
     let full: URL
     let regular: URL

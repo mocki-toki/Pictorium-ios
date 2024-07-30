@@ -23,43 +23,42 @@ final class ProfileService {
 
     func cleanProfile() {
         profile = nil
-        NotificationCenter.default
-            .post(
-                name: ProfileService.didChangeNotification,
-                object: self)
+        NotificationCenter.default.post(
+            name: ProfileService.didChangeNotification,
+            object: self)
     }
 
     func fetchProfile(_ completion: @escaping (Result<Profile, Error>) -> Void) {
-        assert(Thread.isMainThread)
-        task?.cancel()
+        onMainThread {
+            self.task?.cancel()
 
-        guard let request = createMeRequest() else {
-            completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
-            return
-        }
+            guard let request = self.createMeRequest() else {
+                completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
+                return
+            }
 
-        UIBlockingProgressHUD.show()
-        task = session.objectTask(for: request) { [weak self] (result: Result<MeResponseBody, Error>) in
-            self?.task = nil
-            UIBlockingProgressHUD.dismiss()
+            UIBlockingProgressHUD.show()
+            self.task = self.session.objectTask(for: request) { [weak self] (result: Result<MeResult, Error>) in
+                self?.task = nil
+                UIBlockingProgressHUD.dismiss()
 
-            switch result {
-            case .success(let body):
-                let profile = Profile(from: body)
-                self?.profile = profile
-                completion(.success(profile))
+                switch result {
+                case .success(let result):
+                    let profile = Profile(from: result)
+                    self?.profile = profile
+                    completion(.success(profile))
 
-                NotificationCenter.default
-                    .post(
+                    NotificationCenter.default.post(
                         name: ProfileService.didChangeNotification,
                         object: self)
-            case .failure(let error):
-                print("ProfileService failure: \(error)")
-                completion(.failure(error))
+                case .failure(let error):
+                    print("ProfileService failure: \(error)")
+                    completion(.failure(error))
+                }
             }
-        }
 
-        task?.resume()
+            self.task?.resume()
+        }
     }
 
     // MARK: - Private Methods

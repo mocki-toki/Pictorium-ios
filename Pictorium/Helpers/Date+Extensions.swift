@@ -7,6 +7,8 @@
 
 import Foundation
 
+let iso8601DateFormatter = ISO8601DateFormatter()
+
 private let dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .long
@@ -16,6 +18,6 @@ private let dateFormatter: DateFormatter = {
 
 extension Date {
     func formatToString() -> String {
-        return dateFormatter.string(from: self)
+        dateFormatter.string(from: self)
     }
 }

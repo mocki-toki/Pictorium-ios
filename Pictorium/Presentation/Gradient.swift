@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-public class Gradient: UIView {
+final class Gradient: UIView {
     @IBInspectable var startColor: UIColor = .ypBlack { didSet { updateColors() }}
     @IBInspectable var endColor: UIColor = .ypWhite { didSet { updateColors() }}
     @IBInspectable var startLocation: Double = 0.05 { didSet { updateLocations() }}
@@ -16,7 +16,7 @@ public class Gradient: UIView {
     @IBInspectable var horizontalMode: Bool = false { didSet { updatePoints() }}
     @IBInspectable var diagonalMode: Bool = false { didSet { updatePoints() }}
 
-    override public class var layerClass: AnyClass { CAGradientLayer.self }
+    override class var layerClass: AnyClass { CAGradientLayer.self }
 
     var gradientLayer: CAGradientLayer { layer as! CAGradientLayer }
 

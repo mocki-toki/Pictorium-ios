@@ -50,7 +50,9 @@ final class WebViewViewController: UIViewController {
     }
 
     private func loadAuthView() {
-        var urlComponents = URLComponents(string: APIConfig.authorizeURL)!
+        var urlComponents = URLComponents(string: APIConfig.authorizeURL)
+        guard var urlComponents else { return }
+
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: APIConfig.accessKey),
             URLQueryItem(name: "redirect_uri", value: APIConfig.redirectURI),
@@ -58,7 +60,8 @@ final class WebViewViewController: UIViewController {
             URLQueryItem(name: "scope", value: APIConfig.accessScope)
         ]
 
-        let request = URLRequest(url: urlComponents.url!)
+        guard let url = urlComponents.url else { return }
+        let request = URLRequest(url: url)
         webView.load(request)
     }
 }

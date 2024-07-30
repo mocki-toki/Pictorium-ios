@@ -49,9 +49,6 @@ final class ProfileViewController: UIViewController {
         return button
     }()
 
-    private var profileServiceObserver: NSObjectProtocol?
-    private var profileImageServiceObserver: NSObjectProtocol?
-
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
@@ -62,25 +59,27 @@ final class ProfileViewController: UIViewController {
         updateProfile()
         updateAvatar()
 
-        profileServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateProfile()
-            }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(profileDidChange(_:)),
+            name: ProfileService.didChangeNotification,
+            object: nil
+        )
 
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(profileImageDidChange(_:)),
+            name: ProfileImageService.didChangeNotification,
+            object: nil
+        )
+    }
+
+    @objc private func profileDidChange(_ notification: Notification) {
+        updateProfile()
+    }
+
+    @objc private func profileImageDidChange(_ notification: Notification) {
+        updateAvatar()
     }
 
     // MARK: - Private Methods
@@ -148,8 +147,8 @@ final class ProfileViewController: UIViewController {
 
     @objc private func buttonTapped() {
         alertPresenter?.show(
-            title: "Вы уверены, что хотите выйти из аккаунта?",
-            message: nil,
+            title: "Пока, пока!",
+            message: "Уверены что хотите выйти?",
             buttons: [
                 ("Да", {
                     ProfileLogoutService.shared.logout()

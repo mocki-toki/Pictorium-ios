@@ -10,7 +10,7 @@ import Foundation
 struct Photo {
     let id: String
     let size: CGSize
-    let createdAt: Date
+    let createdAt: Date?
     let welcomeDescription: String?
     let thumbImageURL: URL
     let largeImageURL: URL
@@ -18,19 +18,17 @@ struct Photo {
 }
 
 extension Photo {
-    init(from responseBody: PhotoResponseBody) {
-        let dateFormatter = ISO8601DateFormatter()
-
-        self.id = responseBody.id
-        self.size = CGSize(width: responseBody.width, height: responseBody.height)
-        self.createdAt = dateFormatter.date(from: responseBody.createdAt)!
-        self.welcomeDescription = responseBody.description
-        self.thumbImageURL = responseBody.urls.small
-        self.largeImageURL = responseBody.urls.full
-        self.isLiked = responseBody.likedByUser
+    init(from result: PhotoResult) {
+        self.id = result.id
+        self.size = CGSize(width: result.width, height: result.height)
+        self.createdAt = iso8601DateFormatter.date(from: result.createdAt ?? "")
+        self.welcomeDescription = result.description
+        self.thumbImageURL = result.urls.small
+        self.largeImageURL = result.urls.full
+        self.isLiked = result.likedByUser
     }
 
-    init(from responseBody: ChangeLikePhotoResponseBody) {
-        self.init(from: responseBody.photo)
+    init(from result: ChangeLikePhotoResult) {
+        self.init(from: result.photo)
     }
 }
