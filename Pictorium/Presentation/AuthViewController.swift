@@ -25,6 +25,8 @@ final class AuthViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        alertPresenter = AlertPresenter(viewController: self)
+
         configureBackButton()
     }
 
@@ -61,7 +63,7 @@ extension AuthViewController: WebViewViewControllerDelegate {
                     self.alertPresenter?.show(
                         title: "Что-то пошло не так",
                         message: "Не удалось войти в систему",
-                        buttonText: "Ок"
+                        buttons: [("Ок", nil)]
                     )
                 }
             }

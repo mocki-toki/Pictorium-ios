@@ -21,40 +21,40 @@ final class OAuth2Service {
     // MARK: - Public Methods
 
     func fetchOAuthToken(with code: String, completion: @escaping (Result<String, Error>) -> Void) {
-        assert(Thread.isMainThread)
-
         guard lastCode != code else {
             completion(.failure(NSError(domain: "Duplicate request", code: 0, userInfo: nil)))
             return
         }
 
-        task?.cancel()
-        lastCode = code
+        onMainThread {
+            self.task?.cancel()
+            self.lastCode = code
 
-        guard let request = createTokenRequest(with: code) else {
-            completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
-            return
-        }
-
-        UIBlockingProgressHUD.show()
-        task = session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
-            self?.task = nil
-            self?.lastCode = nil
-            UIBlockingProgressHUD.dismiss()
-
-            switch result {
-            case .success(let body):
-                let token = body.accessToken
-
-                self?.tokenStorage.token = token
-                completion(.success(token))
-            case .failure(let error):
-                print("OAuth2Service failure: \(error)")
-                completion(.failure(error))
+            guard let request = self.createTokenRequest(with: code) else {
+                completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
+                return
             }
-        }
 
-        task?.resume()
+            UIBlockingProgressHUD.show()
+            self.task = self.session.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResult, Error>) in
+                self?.task = nil
+                self?.lastCode = nil
+                UIBlockingProgressHUD.dismiss()
+
+                switch result {
+                case .success(let result):
+                    let token = result.accessToken
+
+                    self?.tokenStorage.token = token
+                    completion(.success(token))
+                case .failure(let error):
+                    print("OAuth2Service failure: \(error)")
+                    completion(.failure(error))
+                }
+            }
+
+            self.task?.resume()
+        }
     }
 
     // MARK: - Private Methods

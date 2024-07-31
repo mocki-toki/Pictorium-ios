@@ -5,7 +5,7 @@ enum UIBlockingProgressHUD {
     // MARK: - Private Methods
 
     private static var window: UIWindow? {
-        return UIApplication.shared.windows.first
+        UIApplication.shared.windows.first
     }
 
     // MARK: - Public Methods

@@ -12,6 +12,7 @@ final class ProfileViewController: UIViewController {
 
     private let profileService = ProfileService.shared
     private let profileImageService = ProfileImageService.shared
+    private var alertPresenter: AlertPresenterProtocol?
 
     private let profileImageView: UIImageView = {
         let imageView = UIImageView()
@@ -48,37 +49,37 @@ final class ProfileViewController: UIViewController {
         return button
     }()
 
-    private var profileServiceObserver: NSObjectProtocol?
-    private var profileImageServiceObserver: NSObjectProtocol?
-
     // MARK: - Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .ypBlack
+        alertPresenter = AlertPresenter(viewController: self)
 
+        view.backgroundColor = .ypBlack
         updateProfile()
         updateAvatar()
 
-        profileServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateProfile()
-            }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(profileDidChange(_:)),
+            name: ProfileService.didChangeNotification,
+            object: nil
+        )
 
-        profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.didChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
-                guard let self = self else { return }
-                self.updateAvatar()
-            }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(profileImageDidChange(_:)),
+            name: ProfileImageService.didChangeNotification,
+            object: nil
+        )
+    }
+
+    @objc private func profileDidChange(_ notification: Notification) {
+        updateProfile()
+    }
+
+    @objc private func profileImageDidChange(_ notification: Notification) {
+        updateAvatar()
     }
 
     // MARK: - Private Methods
@@ -136,10 +137,30 @@ final class ProfileViewController: UIViewController {
     }
 
     private func configureExitButton() {
+        exitButton.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+
         NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
             exitButton.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor)
         ])
+    }
+
+    @objc private func buttonTapped() {
+        alertPresenter?.show(
+            title: "Пока, пока!",
+            message: "Уверены что хотите выйти?",
+            buttons: [
+                ("Да", {
+                    ProfileLogoutService.shared.logout()
+                    guard let window = UIApplication.shared.windows.first else {
+                        assertionFailure("Invalid window configuration")
+                        return
+                    }
+                    window.rootViewController = SplashViewController()
+                }),
+                ("Нет", nil)
+            ]
+        )
     }
 
     private func updateAvatar() {
