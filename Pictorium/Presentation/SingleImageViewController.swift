@@ -63,18 +63,28 @@ final class SingleImageViewController: UIViewController {
 
         imageView.kf.setImage(with: url) { [weak self] result in
             guard let self = self else { return }
-            self.shareButton.isHidden = false
             UIBlockingProgressHUD.dismiss()
 
             switch result {
-            case .success:
-                guard let image = self.imageView.image else { return }
-                self.rescaleAndCenterImageInScrollView(image: image)
-                self.imageView.frame.size = image.size
+            case .success(let value):
+                self.shareButton.isHidden = false
+                self.rescaleAndCenterImageInScrollView(image: value.image)
             case .failure(let error):
-                print("Load image error: \(error)")
+                self.showErrorAlert(with: error)
             }
         }
+    }
+
+    private func showErrorAlert(with error: KingfisherError) {
+        let alertController = UIAlertController(
+            title: "Ошибка загрузки",
+            message: "Не удалось загрузить изображение. Попробуйте еще раз позже.",
+            preferredStyle: .alert
+        )
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alertController, animated: true)
+
+        print("Load image error: \(error)")
     }
 
     private func rescaleAndCenterImageInScrollView(image: UIImage) {

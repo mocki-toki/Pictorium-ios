@@ -67,7 +67,7 @@ final class ProfileImageService {
     // MARK: - Private Methods
 
     private func createUserRequest(username: String) -> URLRequest? {
-        guard let url = URL(string: "\(APIConfig.apiURL)/users/\(username)") else {
+        guard let url = URL(string: "\(APIConfig.defaultBaseURL)/users/\(username)") else {
             return nil
         }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Photo {
+struct Photo: Equatable {
     let id: String
     let size: CGSize
     let createdAt: Date?
@@ -15,6 +15,10 @@ struct Photo {
     let thumbImageURL: URL
     let largeImageURL: URL
     let isLiked: Bool
+
+    static func == (lhs: Photo, rhs: Photo) -> Bool {
+        return lhs.id == rhs.id
+    }
 }
 
 extension Photo {
@@ -24,7 +28,7 @@ extension Photo {
         self.createdAt = iso8601DateFormatter.date(from: result.createdAt ?? "")
         self.welcomeDescription = result.description
         self.thumbImageURL = result.urls.small
-        self.largeImageURL = result.urls.full
+        self.largeImageURL = result.urls.small
         self.isLiked = result.likedByUser
     }
 

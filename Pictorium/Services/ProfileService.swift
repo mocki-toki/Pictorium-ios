@@ -64,7 +64,7 @@ final class ProfileService {
     // MARK: - Private Methods
 
     private func createMeRequest() -> URLRequest? {
-        guard let url = URL(string: "\(APIConfig.apiURL)/me") else {
+        guard let url = URL(string: "\(APIConfig.defaultBaseURL)/me") else {
             return nil
         }
 
